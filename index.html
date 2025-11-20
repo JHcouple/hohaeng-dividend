@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <title>호행 배당 – JEPQ 배당 총정리</title>
+    <meta
+      name="description"
+      content="JEPQ 배당일, 배당락일, 배당금, 최근 배당 히스토리를 한 페이지에서 정리해서 보여주는 호행 배당 전용 페이지입니다."
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      :root {
+        --bg: #020617;
+        --card: #020617;
+        --card-soft: #020617;
+        --border: #1f2937;
+        --accent: #38bdf8;
+        --accent-soft: rgba(56, 189, 248, 0.12);
+        --accent2: #818cf8;
+        --text: #e5e7eb;
+        --sub: #9ca3af;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+        background: radial-gradient(circle at top, #0f172a 0, #020617 50%);
+        color: var(--text);
+      }
+
+      main {
+        min-height: 100vh;
+      }
+
+      .container {
+        max-width: 960px;
+        margin: 0 auto;
+        padding: 32px 16px 48px;
+      }
+
+      .badge {
+        font-size: 12px;
+        color: var(--sub);
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        margin-bottom: 6px;
+      }
+
+      h1 {
+        font-size: 26px;
+        line-height: 1.3;
+        margin: 0 0 10px;
+      }
+
+      p {
+        margin: 0;
+      }
+
+      .hero-sub {
+        font-size: 14px;
+        color: var(--sub);
+        line-height: 1.6;
+        max-width: 640px;
+      }
+
+      section {
+        margin-top: 28px;
+      }
+
+      h2 {
+        font-size: 18px;
+        margin: 0 0 8px;
+      }
+
+      h3 {
+        font-size: 15px;
+        margin: 0 0 6px;
+      }
+
+      .card {
+        border-radius: 16px;
+        padding: 20px;
+        border: 1px solid var(--border);
+        background: linear-gradient(
+          135deg,
+          rgba(15, 23, 42, 0.96),
+          rgba(15, 23, 42, 0.98)
+        );
+        box-shadow: 0 18px 45px rgba(0, 0, 0, 0.6);
+      }
+
+      .soft-card {
+        border-radius: 14px;
+        padding: 16px;
+        border: 1px solid var(--border);
+        background: radial-gradient(circle at top left, #0b1120, #020617);
+      }
+
+      .pill {
+        font-size: 12px;
+        color: var(--sub);
+        padding: 4px 8px;
+        border-radius: 999px;
+        border: 1px solid #4b5563;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .pill-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 999px;
+        background: var(--accent);
+      }
+
+      .grid {
+        display: grid;
+        gap: 12px;
+      }
+
+      @media (min-width: 768px) {
+        .grid-2 {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+        .grid-3 {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+        .grid-4 {
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+      }
+
+      .stat-box {
+        padding: 12px;
+        border-radius: 12px;
+        border: 1px solid #1f2937;
+        background: radial-gradient(circle at top, #020617, #020617);
+      }
+
+      .stat-label {
+        font-size: 11px;
+        color: var(--sub);
+        margin-bottom: 4px;
+      }
+
+      .stat-value {
+        font-size: 15px;
+        font-weight: 600;
+      }
+
+      .note {
+        font-size: 12px;
+        color: var(--sub);
+        margin-top: 8px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+      }
+
+      thead {
+        background: #020617;
+      }
+
+      th,
+      td {
+        padding: 8px 10px;
+        border-bottom: 1px solid #111827;
+        text-align: left;
+        white-space: nowrap;
+      }
+
+      th {
+        font-weight: 500;
+        color: #9ca3af;
+        font-size: 12px;
+      }
+
+      tbody tr:hover {
+        background: rgba(15, 23, 42, 0.8);
+      }
+
+      .table-wrap {
+        overflow-x: auto;
+        border-radius: 12px;
+        border: 1px solid #1f2937;
+        background: #020617;
+      }
+
+      .tag {
+        display: inline-flex;
+        align-items: center;
+        padding: 3px 8px;
+        border-radius: 999px;
+        border: 1px solid #374151;
+        font-size: 11px;
+        color: #9ca3af;
+      }
+
+      .tag-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 999px;
+        margin-right: 6px;
+        background: var(--accent2);
+      }
+
+      .ad-box {
+        margin-top: 16px;
+        margin-bottom: 8px;
+        padding: 10px;
+        border-radius: 10px;
+        border: 1px dashed #4b5563;
+        font-size: 12px;
+        text-align: center;
+        color: #9ca3af;
+        background: rgba(15, 23, 42, 0.7);
+      }
+
+      .field-label {
+        font-size: 12px;
+        color: var(--sub);
+        margin-bottom: 4px;
+      }
+
+      .input-row {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        margin-bottom: 10px;
+      }
+
+      input,
+      button,
+      select {
+        font-family: inherit;
+      }
+
+      .input-control {
+        width: 100%;
+        padding: 8px 10px;
+        border-radius: 8px;
+        border: 1px solid #374151;
+        background: #020617;
+        color: var(--text);
+        font-size: 13px;
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        padding: 8px 14px;
+        border-radius: 999px;
+        border: none;
+        cursor: pointer;
+        font-size: 13px;
+        font-weight: 500;
+        background: linear-gradient(
+          135deg,
+          rgba(56, 189, 248, 0.9),
+          rgba(129, 140, 248, 1)
+        );
+        color: #020617;
+        box-shadow: 0 12px 30px rgba(37, 99, 235, 0.5);
+      }
+
+      .btn:active {
+        transform: translateY(1px);
+        box-shadow: 0 6px 18px rgba(37, 99, 235, 0.5);
+      }
+
+      .result-box {
+        margin-top: 10px;
+        padding: 10px;
+        border-radius: 10px;
+        border: 1px solid #1f2937;
+        background: rgba(15, 23, 42, 0.95);
+        font-size: 13px;
+      }
+
+      .highlight {
+        color: var(--accent);
+        font-weight: 600;
+      }
+
+      .two-col {
+        display: grid;
+        gap: 12px;
+      }
+
+      @media (min-width: 768px) {
+        .two-col {
+          grid-template-columns: minmax(0, 2.2fr) minmax(0, 1.5fr);
+        }
+      }
+
+      .coupang-grid {
+        display: grid;
+        gap: 12px;
+      }
+
+      @media (min-width: 768px) {
+        .coupang-grid {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+      }
+
+      .cp-card {
+        border-radius: 14px;
+        padding: 14px;
+        border: 1px solid #1f2937;
+        background: radial-gradient(circle at top left, #020617, #020617);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        gap: 8px;
+      }
+
+      .cp-title {
+        font-size: 13px;
+        font-weight: 500;
+      }
+
+      .cp-desc {
+        font-size: 12px;
+        color: #9ca3af;
+      }
+
+      .cp-btn {
+        margin-top: 4px;
+        font-size: 12px;
+        padding: 6px 10px;
+        border-radius: 999px;
+        border: 1px solid rgba(56, 189, 248, 0.6);
+        background: rgba(8, 47, 73, 0.6);
+        color: var(--accent);
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+      }
+
+      footer {
+        margin-top: 32px;
+        font-size: 11px;
+        color: #6b7280;
+        border-top: 1px solid #111827;
+        padding-top: 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <div class="container">
+        <!-- HERO -->
+        <header>
+          <div class="badge">HOHAENG DIVIDEND</div>
+          <h1>JEPQ 배당 총정리 – 배당일·배당락일·배당금 한 번에 보기</h1>
+          <p class="hero-sub">
+            미국 나스닥 성장주 + 커버드콜 기반 ETF,
+            <strong>JEPQ</strong>의 배당 정보를 모아두는 페이지입니다. 배당일,
+            배당락일, 배당금, 최근 추이를 한 번에 정리해서 보고 싶을 때
+            사용해보세요.
+          </p>
+        </header>
+
+        <!-- 광고 자리 1 -->
+        <div class="ad-box">
+          광고 영역 1 – 여기에 나중에 Google AdSense 스크립트 삽입
+        </div>
+
+        <!-- 이번 분기 요약 + 간단 계산기 -->
+        <section class="two-col">
+          <!-- 왼쪽: 요약 카드 -->
+          <div class="card">
+            <div class="pill" style="margin-bottom: 10px">
+              <span class="pill-dot"></span>
+              이번 분기 JEPQ 배당 요약 (예시 데이터)
+            </div>
+            <div class="grid grid-2">
+              <div class="stat-box">
+                <div class="stat-label">배당락일 (Ex-dividend)</div>
+                <div class="stat-value">2024-12-XX</div>
+              </div>
+              <div class="stat-box">
+                <div class="stat-label">지급일 (Payment date)</div>
+                <div class="stat-value">2025-01-XX</div>
+              </div>
+              <div class="stat-box">
+                <div class="stat-label">1주당 배당금 (USD)</div>
+                <div class="stat-value">$0.38</div>
+              </div>
+              <div class="stat-box">
+                <div class="stat-label">연환산 배당률 (대략)</div>
+                <div class="stat-value">약 ○~○% 구간</div>
+              </div>
+            </div>
+            <p class="note">
+              위 수치는 예시이며, 실제 일정과 금액은 반드시 증권사·운용사 공시를
+              기준으로 다시 확인해주세요.
+            </p>
+          </div>
+
+          <!-- 오른쪽: 간단 배당일 시뮬레이터 -->
+          <div class="soft-card">
+            <h2 style="font-size: 15px; margin-bottom: 8px">
+              간단 배당일 시뮬레이터 (연습용)
+            </h2>
+            <p class="hero-sub" style="font-size: 12px; margin-bottom: 10px">
+              기준 배당일을 입력하면, 아주 러프하게 배당락일과 지급일을
+              계산해보는 연습용 도구입니다. 실제 일정과 다를 수 있어요.
+            </p>
+
+            <div class="input-row">
+              <label class="field-label" for="baseDate">
+                배당 기준일 (예상 기준 날짜)
+              </label>
+              <input
+                id="baseDate"
+                type="date"
+                class="input-control"
+                placeholder="기준 배당일 선택"
+              />
+            </div>
+
+            <button class="btn" id="calcBtn" type="button">
+              배당락일·지급일 대략 계산하기
+            </button>
+
+            <div id="calcResult" class="result-box" style="display: none">
+              <p style="margin-bottom: 4px">
+                📌 <span class="highlight">대략적인 시뮬레이션 결과</span>
+              </p>
+              <p id="simEx"></p>
+              <p id="simPay"></p>
+              <p class="note" style="margin-top: 6px">
+                실제 배당락일·지급일과는 다를 수 있으며, 운용사 공시 및 증권사
+                일정을 반드시 확인해주세요.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- 광고 자리 2 (테이블 위쪽) -->
+        <div class="ad-box">
+          광고 영역 2 – 테이블 상단 배너 (애드센스, 제휴 배너 등)
+        </div>
+
+        <!-- 히스토리 테이블 -->
+        <section>
+          <h2>최근 JEPQ 배당 히스토리 (예시)</h2>
+          <p class="hero-sub" style="font-size: 13px; margin-bottom: 10px">
+            아래 표는 JEPQ의 분기별 배당 내역 예시입니다. 실제 수치는 운용사
+            사이트와 증권사 HTS/MTS의 배당 공시를 기준으로 확인하는 것이 가장
+            정확합니다.
+          </p>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>분기/월</th>
+                  <th>배당락일</th>
+                  <th>지급일</th>
+                  <th>1주당 배당금(USD)</th>
+                  <th>메모</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>2024-12</td>
+                  <td>2024-12-XX</td>
+                  <td>2025-01-XX</td>
+                  <td>$0.38</td>
+                  <td>정상 분배</td>
+                </tr>
+                <tr>
+                  <td>2024-09</td>
+                  <td>2024-09-XX</td>
+                  <td>2024-10-XX</td>
+                  <td>$0.42</td>
+                  <td>3분기 배당</td>
+                </tr>
+                <tr>
+                  <td>2024-06</td>
+                  <td>2024-06-XX</td>
+                  <td>2024-07-XX</td>
+                  <td>$0.41</td>
+                  <td>2분기 배당</td>
+                </tr>
+                <tr>
+                  <td>2024-03</td>
+                  <td>2024-03-XX</td>
+                  <td>2024-04-XX</td>
+                  <td>$0.37</td>
+                  <td>1분기 배당</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="note">
+            연간 배당 흐름을 보면서 “배당이 어느 정도 구간에서 움직이는지”,
+            “어느 분기에 변동이 컸는지”를 같이 체크해보면 좋아요.
+          </p>
+        </section>
+
+        <!-- 연간 요약 + QQQ 비교 -->
+        <section class="grid grid-2">
+          <!-- 연간 요약 -->
+          <div class="soft-card">
+            <h2>최근 1년 JEPQ 배당 요약 (감각 잡기)</h2>
+            <p class="hero-sub" style="font-size: 13px; margin-bottom: 10px">
+              실제 데이터 기반으로 정리하면 더 좋지만, 여기서는 흐름을 이해하는
+              감각용 예시로 봐주세요.
+            </p>
+            <ul style="font-size: 13px; padding-left: 18px; margin: 0">
+              <li>최근 1년 배당금 합계: 대략 $1.5 ~ $1.7 구간</li>
+              <li>현재 주가 기준 대략 배당률: ○~○%대 구간</li>
+              <li>커버드콜 전략 특성상, 분기별 배당은 변동성이 있음</li>
+            </ul>
+            <p class="note">
+              고정 배당이 아니라, 옵션 프리미엄·시장 변동성에 따라 배당금이
+              달라지는 구조라는 점을 꼭 기억해야 해요.
+            </p>
+          </div>
+
+          <!-- QQQ vs JEPQ -->
+          <div class="soft-card">
+            <h2>QQQ vs JEPQ 한눈에 비교</h2>
+            <div style="overflow-x: auto; margin-bottom: 8px">
+              <table style="min-width: 260px">
+                <thead>
+                  <tr>
+                    <th>항목</th>
+                    <th>QQQ</th>
+                    <th>JEPQ</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>전략</td>
+                    <td>나스닥100 순수 추종</td>
+                    <td>나스닥 성장주 + 커버드콜</td>
+                  </tr>
+                  <tr>
+                    <td>배당</td>
+                    <td>거의 없음</td>
+                    <td>분기 배당</td>
+                  </tr>
+                  <tr>
+                    <td>장점</td>
+                    <td>장기 수익률 잠재력 ↑</td>
+                    <td>배당 + 변동성 일부 완화</td>
+                  </tr>
+                  <tr>
+                    <td>단점</td>
+                    <td>변동성 큼</td>
+                    <td>상승 구간 수익률 상단 제한 가능</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="note">
+              QQQ는 “성장률 극대화”, JEPQ는 “성장 + 배당·현금흐름”에 조금 더
+              포커스가 있는 느낌으로 보면 이해하기 쉬워요.
+            </p>
+          </div>
+        </section>
+
+        <!-- Q&A 섹션 -->
+        <section>
+          <h2>배당 기초 Q&A (JEPQ 볼 때 자주 나오는 질문)</h2>
+
+          <div class="grid">
+            <div class="soft-card">
+              <h3>Q. 배당락일이 뭐예요?</h3>
+              <p style="font-size: 13px; color: var(--text)">
+                배당을 받기 위해 주식을 보유하고 있어야 하는 기준일을 정하기
+                위한 “기준 시점”이라고 생각하면 편해요. 일반적으로
+                <span class="highlight">배당락일 하루 전까지 보유</span>하고
+                있으면 이번 배당을 받을 수 있습니다.
+              </p>
+            </div>
+
+            <div class="soft-card">
+              <h3>Q. 배당 받으려면 언제까지 들고 있어야 하나요?</h3>
+              <p style="font-size: 13px; color: var(--text)">
+                <span class="highlight">배당락일 전일 장 마감까지</span> 보유하고
+                있으면 돼요. 배당락일 당일에 매수하면 이번 배당은 못 받고,
+                다음 배당부터 대상이 됩니다.
+              </p>
+            </div>
+
+            <div class="soft-card">
+              <h3>Q. 환율·세금도 같이 봐야 하나요?</h3>
+              <p style="font-size: 13px; color: var(--text)">
+                네. 미국 배당 ETF는 기본적으로
+                <span class="highlight">15% 원천징수</span>가 들어가고, 원화로
+                환전될 때의 환율에 따라 실제 손에 들어오는 금액이 달라집니다.
+                그래서 배당 금액만 보지 말고, 환율·세금까지 같이 보는 게 좋아요.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- 쿠팡 파트너스 영역 -->
+        <section>
+          <div class="pill" style="margin-bottom: 10px">
+            <span class="pill-dot"></span>
+            배당·ETF 공부할 때 도움 되는 도구 (쿠팡 추천 자리)
+          </div>
+
+          <p class="hero-sub" style="font-size: 13px; margin-bottom: 10px">
+            아래 상품들은 JEPQ 같은 배당 ETF를 공부할 때 실제로 있으면 좋은
+            것들을 기준으로 골라두는 영역입니다. 링크에 쿠팡 파트너스가 연결될
+            수 있어요.
+          </p>
+
+          <div class="coupang-grid">
+            <div class="cp-card">
+              <div>
+                <div class="tag" style="margin-bottom: 6px">
+                  <span class="tag-dot"></span>미국 ETF 입문서
+                </div>
+                <div class="cp-title">
+                  미국 ETF·배당 투자 개념 잡기 좋은 기본서
+                </div>
+                <div class="cp-desc">
+                  JEPQ, JEPI, QQQ 같은 ETF 구조를 한 번에 정리하고 싶을 때
+                  참고하기 좋은 책. 배당 구조, 커버드콜 개념이 처음이라면
+                  필수입니다.
+                </div>
+              </div>
+              <a
+                href="#"
+                class="cp-btn"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                쿠팡에서 자세히 보기
+              </a>
+            </div>
+
+            <div class="cp-card">
+              <div>
+                <div class="tag" style="margin-bottom: 6px">
+                  <span class="tag-dot"></span>투자 환경 셋업
+                </div>
+                <div class="cp-title">
+                  차트·재무제표 보기에 편한 모니터/거치대
+                </div>
+                <div class="cp-desc">
+                  ETF 차트와 배당 히스토리를 오래 보다 보면 목·어깨가 먼저
+                  버티질 못 해요. 모니터 높이만 맞춰줘도 피로도가 확 줄어듭니다.
+                </div>
+              </div>
+              <a
+                href="#"
+                class="cp-btn"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                쿠팡 상품 보러가기
+              </a>
+            </div>
+
+            <div class="cp-card">
+              <div>
+                <div class="tag" style="margin-bottom: 6px">
+                  <span class="tag-dot"></span>배당 기록 노트
+                </div>
+                <div class="cp-title">배당 일정·매수 계획 정리용 플래너</div>
+                <div class="cp-desc">
+                  “언제 얼마 들어왔는지” 직접 적어보면 투자 감각이 훨씬 빨리
+                  올라와요. 자신의 배당 흐름을 한눈에 보는 데 좋은 노트입니다.
+                </div>
+              </div>
+              <a
+                href="#"
+                class="cp-btn"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                쿠팡에서 플래너 보기
+              </a>
+            </div>
+          </div>
+        </section>
+
+        <!-- 광고 자리 3 -->
+        <div class="ad-box">
+          광고 영역 3 – 페이지 하단 배너 (애드센스 또는 기타 제휴 배너)
+        </div>
+
+        <!-- 면책 -->
+        <footer>
+          <p>
+            ⚠️ 이 페이지는 정보 제공과 공부 목적이며, 어떤 종목·ETF 매수를
+            권유하는 내용이 아닙니다. 실제 투자 결정은 본인 책임 하에 진행해야
+            하며, JEPQ 배당 관련 최종 정보는 반드시 운용사 공시와 증권사
+            시스템을 기준으로 다시 확인해주세요.
+          </p>
+        </footer>
+      </div>
+    </main>
+
+    <script>
+      // 아주 간단한 "배당락일·지급일 시뮬레이터" (연습용)
+      const btn = document.getElementById("calcBtn");
+      const resultBox = document.getElementById("calcResult");
+      const simEx = document.getElementById("simEx");
+      const simPay = document.getElementById("simPay");
+
+      function addDays(date, days) {
+        const d = new Date(date.getTime());
+        d.setDate(d.getDate() + days);
+        return d;
+      }
+
+      function formatDate(date) {
+        const y = date.getFullYear();
+        const m = String(date.getMonth() + 1).padStart(2, "0");
+        const d = String(date.getDate()).padStart(2, "0");
+        return `${y}-${m}-${d}`;
+      }
+
+      if (btn) {
+        btn.addEventListener("click", () => {
+          const baseInput = document.getElementById("baseDate");
+          if (!baseInput || !baseInput.value) {
+            alert("배당 기준일(예상 날짜)을 먼저 선택해주세요.");
+            return;
+          }
+
+          const base = new Date(baseInput.value);
+          if (isNaN(base.getTime())) {
+            alert("날짜 형식이 잘못되었습니다.");
+            return;
+          }
+
+          // 아주 러프하게: 기준일 기준 배당락일 -2일, 지급일 +20일 가정
+          const ex = addDays(base, -2);
+          const pay = addDays(base, 20);
+
+          simEx.textContent = `• 배당락일(예상): ${formatDate(
+            ex
+          )} 기준으로 이전 보유 여부를 체크해보세요.`;
+          simPay.textContent = `• 지급일(예상): ${formatDate(
+            pay
+          )} 전후로 실제 계좌 입금 일정을 확인해보세요.`;
+
+          resultBox.style.display = "block";
+        });
+      }
+    </script>
+  </body>
+</html>
